@@ -3,8 +3,8 @@
 
 class Vector {
   constructor(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
+    this.x =  x;
+    this.y =  y;
   }
 
   plus(vector) {
@@ -29,7 +29,7 @@ class Actor {
     this.speed = speed;
   }
 
-  act() { }
+  act() {}
 
   get left() {
     return this.pos.x;
@@ -53,13 +53,13 @@ class Actor {
 
   isIntersect(actor) {
     if (!(actor instanceof Actor)) {
-      throw new Error('Можно сравнивать только объекты класса Actor');
+        throw new Error('Можно сравнивать только объекты класса Actor');
     }
-    if (this === actor) {
+    if(this === actor) {
       return false;
     }
     return this.left < actor.right && actor.left < this.right &&
-      this.top < actor.bottom && actor.top < this.bottom;
+    this.top < actor.bottom && actor.top < this.bottom;
   }
 }
 
@@ -91,9 +91,9 @@ class Level {
     }
 
     const top = Math.floor(pos.y),
-      bottom = Math.ceil(pos.y + size.y),
-      left = Math.floor(pos.x),
-      right = Math.ceil(pos.x + size.x);
+          bottom = Math.ceil(pos.y + size.y),
+          left = Math.floor(pos.x),
+          right = Math.ceil(pos.x + size.x);
 
     if (bottom > this.height) {
       return 'lava';
@@ -103,7 +103,7 @@ class Level {
     }
     for (let i = top; i < bottom; i++) {
       for (let j = left; j < right; j++) {
-        const cell = this.grid[i][j];
+          const cell = this.grid[i][j];
         if (cell) {
           return cell;
         }
@@ -129,7 +129,7 @@ class Level {
 
     if (title === 'lava' || title === 'fireball') {
       this.status = 'lost';
-    } else if (title === 'coin' && actor.type === 'coin') {
+    } else if(title === 'coin' && actor.type === 'coin') {
       this.removeActor(actor);
       if (this.noMoreActors(title)) {
         this.status = 'won';
@@ -158,60 +158,70 @@ class LevelParser {
   }
 
   createGrid(plan) {
-    let planEl = plan.map(
-      element => element.split('').map(el => this.obstacleFromSymbol(el))
-    );
+  	let planEl = plan.map(
+  		element => element.split('').map(el => this.obstacleFromSymbol(el))
+  	);
 
     return planEl;
   }
 
   createActors(plan) {
     const actors = [];
-    plan.forEach((element, y) => {
+    plan.forEach ((element, y) => {
       element.split('').forEach((el, x) => {
-
-        // Тут, я полагаю, что в цикле перебираются элементы игрового поля (карты), описанной в schemas
-        // Вот можете вывести их в консоль, они все выведуться.  (фаербол, стена, лава, пустые пространства и т.п.)
-        //console.dir (el);
-
+	  
+	    /*
+				Тут, я полагаю, что в цикле перебираются элементы игрового поля (карты), описанной в schemas
+                Вот можете вывести их в консоль, они все выведуться.  (фаербол, стена, лава, пустые пространства и т.п.)
+				
+					console.dir (el);
+				*/
+	  
         const classActor = this.actorFromSymbol(el);
-        // Здесь, как видим, возвращаются все элементы  игрофого поля
-        //console.dir (classActor);
-
+		  /*
+				Здесь, как видим, возвращаются все элементы  игрофого поля
+				
+					console.dir (classActor);
+				*/
+          
         if (typeof classActor === 'function') {
+		
+		  /*console.dir (classActor);
+                    Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
+                    
+						class FireRain
+						class HorizontalFireball
+						class Coin
+						class Player
+						class Coin
+                    
+                      Ну, понятно дело что соответсвие символов их  КЛАССАМ прописано в этом вот объекте. Он определён ниже.  Т.е.  каждый исмвол соответсвует своему классу!
+                      А из класса мы можем сделать что?  Правильно - экземпляр класса - ОБЪЕКТ. 
+                    
+						const actorDict = {
+						'@': Player,
+						'v': VerticalFireball,
+						'o': Coin,
+						'=': HorizontalFireball,
+						'|': FireRain
+						};
+					*/
 
-          /* 
-          console.dir (classActor);
-          Здесь проверяется уже что элемент - функция.  Т.е. это не пустое пространство. 
-        	
-              class FireRain
-              class HorizontalFireball
-              class Coin
-              class Player
-              class Coin
-        	
-          Ну, понятно дело что соответсвие символов их  КЛАССАМ прописано в этом вот объекте. Он определён ниже.  Т.е.  каждый исмвол соответсвует своему классу!
-          А из класса мы можем сделать что?  Правильно - экземпляр класса - ОБЪЕКТ. 
-        	
-              const actorDict = {
-                '@': Player,
-                'v': VerticalFireball,
-                'o': Coin,
-                '=': HorizontalFireball,
-                '|': FireRain
-              };
-          */
-
-
-          // Значит  мы можем  из неё создать экземпляр класса - ОБЪЕКТ
+		 
+		  // Значит  мы можем  из неё создать экземпляр класса - ОБЪЕКТ
           const actor = new classActor(new Vector(x, y));
-          if (actor instanceof Actor) {
-            console.dir(actor)
-            /*
-            В массив  actors   можно  поместить только  экземпляры коасса унаследованные от Actor
-            Или же  В массив  actors   можно  поместить только объекты класса Actor
-            Всё объекты созданные на поле наследуют от одного родительского класса Actor 
-            */
+         /*
+					Кратко.
+					Перебрали поле   -> Если Символ - имеет свой класс Создадим объект -> Если объект унаследован от Actor -> Поместим его в массив
+					*/
+            
+            if (actor instanceof Actor) {
+		  console.dir (actor)
+		   /* 
+						 В массив  actors   можно  поместить только  экземпляры коасса унаследованные от Actor
+                         Или же  В массив  actors   можно  поместить только объекты класса Actor
+                         Всё объекты созданные на поле наследуют от одного родительского класса Actor 
+						 */
             actors.push(actor);
           }
         }
@@ -220,14 +230,8 @@ class LevelParser {
     console.log(actors);
     return actors;
 
-		/*
-		Перебрали поле   
-		-> Если Символ - имеет свой класс Создадим объект 
-		-> Если объект унаследован от Actor 
-		-> Поместим его в массив
-		-> Полученные данные не
-		*/
-
+		
+		
   }
 
   parse(plan) {
@@ -246,7 +250,7 @@ class Fireball extends Actor {
   }
 
   getNextPosition(time = 1) {
-    return this.pos.plus(this.speed.times(time));
+     return this.pos.plus(this.speed.times(time));
   }
 
   handleObstacle() {
@@ -260,7 +264,7 @@ class Fireball extends Actor {
       this.pos = this.getNextPosition(time);
     }
   }
-
+  
 }
 
 class HorizontalFireball extends Fireball {
@@ -335,12 +339,12 @@ const schemasWin = [
     '                        ',
     '                        ',
     '                        ',
-    '                        ',
-    '                        ',
-    '                        ',
+	'                        ',
+	'                        ',
+	'                        ',
     '!!!!!!!!!!!!!!!!!!!!!!!!'
   ]
-];
+];  
 
 const schemas = [
   [
@@ -351,35 +355,35 @@ const schemas = [
     ' @    xxx          x   x',
     '   o           x        ',
     'xxx                     ',
-    '             xx         ',
-    '                        ',
-    '                        ',
+	'             xx         ',
+	'                        ',
+	'                        ',
     '!!!!!!!!!!!!!!!!!!!!!!!!'
   ],
   [
-    '           |           ',
+     '           |           ',
     '    =                   ',
     '                        ',
     '                        ',
     ' @    xxx      o  x     ',
     '   o           x       o',
     'xxx                    x',
-    '             xx         ',
-    '                        ',
-    '                        ',
+	'             xx         ',
+	'                        ',
+	'                        ',
     '!!!!!!!!!!!!!!!!!!!!!!!!'
   ],
   [
-    '                       ',
+     '                       ',
     '                        ',
     '                        ',
     '                        ',
     ' @                      ',
     '   o o o o o o o o o o  ',
     'xxxxxxxxxxxxxxxxxxxxxxxx',
-    '                        ',
-    '                        ',
-    '                        ',
+	'                        ',
+	'                        ',
+	'                        ',
     '!!!!!!!!!!!!!!!!!!!!!!!!'
   ]
 ];
@@ -391,15 +395,15 @@ const actorDict = {
   '|': FireRain
 };
 
-var gameWin = () => {
-  console.log('Вы  выиграли приз!')
-  const parser = new LevelParser(actorDict);
-  runGame(schemasWin, parser, DOMDisplay)
-  backgroundMain(4);
-  function backgroundMain(n) {
+var gameWin = ()=> {
+	console.log('Вы  выиграли приз!')
+	const parser = new LevelParser(actorDict);
+    runGame(schemasWin, parser, DOMDisplay)
+    backgroundMain(4);
+    function backgroundMain(n) {
     const element = document.getElementById("pole");
-    if (n === 4) {
-      let background = element.classList.add("background-end");
+    if(n === 4){
+       let background = element.classList.add("background-end");
     }
   }
 }
@@ -407,4 +411,4 @@ var gameWin = () => {
 
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
-  .then(() => { gameWin() });
+  .then(() => {gameWin()});

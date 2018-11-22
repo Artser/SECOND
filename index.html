@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+<style>
+hidden {
+  display: none;
+}
+
+.background td {
+  padding: 0;
+}
+
+.fireball {
+  background: rgb(255, 100, 100);
+}
+
+.lava {
+  background: rgb(255, 100, 100);
+}
+
+.elevator {
+  background: rgb(229, 229, 229);
+}
+
+.wall {
+  background: white;
+}
+
+.actor {
+  position: absolute;
+}
+
+.coin {
+  background: rgb(241, 229, 89);
+}
+
+.player {
+  background: rgb(64, 64, 64);
+}
+
+.lost .player {
+  background: rgb(160, 64, 64);
+}
+
+.won .player {
+  box-shadow: -4px -7px 8px white, 4px -7px 8px white;
+}
+
+.game {
+  overflow: hidden;
+  max-width: 600px;
+  max-height: 450px;
+  position: relative;
+}
+#lives {
+    max-width: 600px;
+    background: aquamarine;
+}	
+
+</style>
+<div>
+<span id="lives">  Жизни: 3 </span>
+  </div>
+  <script src="./js/app.js"></script>
+  <script src="./game.js"></script>
+  
+  
+</body>
+</html>
