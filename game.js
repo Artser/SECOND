@@ -394,9 +394,9 @@ var gameWin = () => {
     console.log('Вы  выиграли приз!')
     const parser = new LevelParser(actorDict);
     runGame(schemasWin, parser, DOMDisplay)
-    /*
-       запускаем функцию, которая будет определять 
-       значение экрана
+    /**
+       *запускаем функцию, которая будет определять 
+       *значение экрана
       */
     setBackground(4);
 
